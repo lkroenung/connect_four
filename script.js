@@ -1,6 +1,6 @@
 (function () {
 
-  // 0 == empty
+  // 0 = empty
   // 1 = human
   // 2 = computer
 
@@ -48,19 +48,23 @@
   function playerMove(player, column) {
     if (typeof column === 'undefined') { column = Math.floor(Math.random() * 7); }
     var turn = dropPiece(column, player);
+    // if game has ended
     if (turn == 'reset') {
       setTimeout(resetGame, 1000);
       return false;
     }
     else if (turn == 'redo') {
+      // let the human redo their move
       if (player == 1) {
         alert('That column is full! Try again.');
         return false;
       }
+      // let the computer redo random move
       else if (player == 2) {
         playerMove(2);
       }
     }
+    // else move was successful
     return true;
   };
 
@@ -73,7 +77,7 @@
     // row will equal first empty spot
     // make sure the col isn't full and we don't overwrite another piece
     if (board[row][col] == 0) {
-      // return for catching a win
+      // return for catching a win condition
       return placePiece(row, col, player);
     }
     // need to redo move
@@ -126,7 +130,7 @@
       }
     }
     
-    // check \
+    // check \ diagonal
     if (!won) {
       count = 0;
       for (var i = -3; i <= 3; i++) {
@@ -139,7 +143,7 @@
       }
     }
 
-    // check /
+    // check / diagonal
     if (!won) {
       count = 0;
       for (var i = -3; i <= 3; i++) {
@@ -153,10 +157,12 @@
     }
 
     if (won == true) {
+      // if human won
       if (player == 1) {
         setTimeout(function() { alert('You won!'); }, 100);;
         humanScore += 1;
       }
+      // if computer won
       else if (player == 2) {
         setTimeout(function() { alert('Computer wins.'); }, 100);;
         computerScore += 1;
@@ -170,7 +176,7 @@
       return 'reset';
     }
 
-    // else let the next move continue
+    // else next move can go
     return true;
   };
 
