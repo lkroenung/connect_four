@@ -1,45 +1,13 @@
 (function () {
 
-  // row, column
-  // y, x
   // 0 == empty
-  // player 1 = human
-  // player 2 = computer
+  // 1 = human
+  // 2 = computer
 
   var cellWidth = 100;
-  var boardWidth = cellWidth*7 + 3*2;
   var piecesOnBoard = 0;
   var humanScore = 0;
   var computerScore = 0;
-
-  function boardClick(event) {
-    event = event || window.event;
-    var grid = document.getElementById('gameGrid');
-    var rect = grid.getBoundingClientRect();
-    var column = event.pageX - rect.left;
-    column = Math.floor(column/cellWidth);
-    // if it's from a click it's the human player
-    var player = 1;
-    var turn = dropPiece(column, player);
-    console.log('turn', turn);
-    // if player moved successfully, let the computer move
-    if (turn == 0) {
-      setTimeout(resetGame, 1000);
-    }
-    else if (turn == 2) {
-      computerMove();
-    }
-  }
-
-  function computerMove() {
-    var column = Math.floor(Math.random() * 7);
-    // computer player id
-    var player = 2;
-    var turn = dropPiece(column, player);
-    if (turn == 0) {
-      setTimeout(resetGame, 1000);
-    }
-  };
 
   function setUpBoard() {
     var area = document.getElementById('gameArea');
@@ -65,6 +33,37 @@
     return board;
   };
 
+  function boardClick(event) {
+    event = event || window.event;
+    var grid = document.getElementById('gameGrid');
+    var rect = grid.getBoundingClientRect();
+    var column = event.pageX - rect.left;
+    column = Math.floor(column/cellWidth);
+    // if it's from a click, it's the human player
+    var move = playerMove(1, column);
+    // if that move was succesful, let the computer move
+    if (move) { playerMove(2); }
+  }
+
+  function playerMove(player, column) {
+    if (typeof column === 'undefined') { column = Math.floor(Math.random() * 7); }
+    var turn = dropPiece(column, player);
+    if (turn == 'reset') {
+      setTimeout(resetGame, 1000);
+      return false;
+    }
+    else if (turn == 'redo') {
+      if (player == 1) {
+        alert('That column is full! Try again.');
+        return false;
+      }
+      else if (player == 2) {
+        playerMove(2);
+      }
+    }
+    return true;
+  };
+
   function dropPiece(col, player) {
     // check this column starting from bottom
     var row = 5;
@@ -74,26 +73,18 @@
     // row will equal first empty spot
     // make sure the col isn't full and we don't overwrite another piece
     if (board[row][col] == 0) {
-      var winCatch = placePiece(row, col, player);
-      // signifies the computer can move now
-      console.log('winCatch', winCatch);
-      return winCatch;
+      // return for catching a win
+      return placePiece(row, col, player);
     }
-    // let human try again if the column was full
-    else if (player == 1) {
-      alert('That column is full! Try again.');
-      // signifies the human player needs to try again
-      return 1;
-    }
-    // let the computer try again if the column was full on it's random move
-    else {
-      computerMove();
-    }
+    // need to redo move
+    else { return 'redo'; }
   };
   
   function placePiece(row, col, player) {
-    var gameArea = document.getElementById('gameArea');
+    // set 2d array position with player ID#
     board[row][col] = player;
+
+    var gameArea = document.getElementById('gameArea');
     var disc = document.createElement('div');
     disc.className = 'disc player' + player;
     disc.style.position = "absolute";
@@ -103,6 +94,7 @@
     disc.style.left = (posx) + 'px';
     disc.style.top = (posy) + 'px';
     gameArea.appendChild(disc);
+    
     piecesOnBoard += 1;
     return checkWin(row, col, player);
   };
@@ -163,17 +155,17 @@
         setTimeout(function() { alert('Computer wins.'); }, 100);;
         computerScore += 1;
       }
-      return 0;
+      return 'reset';
     }
 
     // else check to see if all spots are full, end game
     if (piecesOnBoard == 7*6) {
       setTimeout(function() { alert('Game over, draw.'); }, 100);;
-      return 0;
+      return 'reset';
     }
 
-    // lets the next move continue
-    return 2;
+    // else let the next move continue
+    return true;
   };
 
   function resetGame() {

@@ -37,8 +37,7 @@ h1 {
 }
 h1 span {
   float: right;
-  font-size: 0.6em;
-  padding-top: 10px;
+  padding-top: 11px;
 }
 h1 strong {
   padding: 4px 8px;
@@ -48,7 +47,7 @@ h1 strong {
 p { margin: 0; padding: 0; color: #666; }
 #score {
   margin-bottom: 15px;
-  font-size: 0.65em;
+  font-size: 0.6em;
   font-family: 'Maven Pro', inherit;
 }
 #score strong { font-weight: 700; }
