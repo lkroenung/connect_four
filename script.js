@@ -31,18 +31,9 @@
       grid.appendChild(tr);
     }
     document.getElementById('gameArea').addEventListener('click', boardClick);
-    document.getElementById('gameArea').addEventListener('hover', boardHover);
     document.getElementById('score').innerHTML = '<strong class="player1">You: ' + humanScore + '</strong>&nbsp;&nbsp;&nbsp; <strong class="player2">Computer: ' + computerScore + '</strong>';
     return board;
   };
-
-  function boardHover(event) {
-    // event = event || window.event;
-    // var grid = document.getElementById('gameGrid');
-    // var rect = grid.getBoundingClientRect();
-    // var column = event.pageX - rect.left;
-    // column = Math.floor(column/cellWidth);
-  }
 
   function boardClick(event) {
     event = event || window.event;
