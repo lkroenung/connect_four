@@ -94,7 +94,7 @@
     disc.style.left = (posx) + 'px';
     disc.style.top = (posy) + 'px';
     gameArea.appendChild(disc);
-    
+
     piecesOnBoard += 1;
     return checkWin(row, col, player);
   };
@@ -115,35 +115,41 @@
 
     // check vertical, check 3 spaces below current row
     // only check vertical if this row is between indexes 0-2
-    count = 0;
-    if (row <= rows-4) {
-      for (var i = row; i < row+4; i++) {
-        if (board[i][col] == player) { count++; }
-        else { count = 0; }
-        if (count == 4) { won = true; }
-      }
-    }
-
-    // check \
-    count = 0;
-    for (var i = -3; i <= 3; i++) {
-      if (col+i >= 0 && col+i < cols && row+i >= 0 && row+i < rows) {
-        if (board[row+i][col+i] == player) {
-          count++;
+    if (!won) {
+      count = 0;
+      if (row <= rows-4) {
+        for (var i = row; i < row+4; i++) {
+          if (board[i][col] == player) { count++; }
+          else { count = 0; }
+          if (count == 4) { won = true; break; }
         }
       }
-      if (count == 4) { won = true; }
+    }
+    
+    // check \
+    if (!won) {
+      count = 0;
+      for (var i = -3; i <= 3; i++) {
+        if (col+i >= 0 && col+i < cols && row+i >= 0 && row+i < rows) {
+          if (board[row+i][col+i] == player) {
+            count++;
+          }
+        }
+        if (count == 4) { won = true; break; }
+      }
     }
 
     // check /
-    count = 0;
-    for (var i = -3; i <= 3; i++) {
-      if (col+i >= 0 && col+i < cols && row-i >= 0 && row-i < rows) {
-        if (board[row-i][col+i] == player) {
-          count++;
+    if (!won) {
+      count = 0;
+      for (var i = -3; i <= 3; i++) {
+        if (col+i >= 0 && col+i < cols && row-i >= 0 && row-i < rows) {
+          if (board[row-i][col+i] == player) {
+            count++;
+          }
         }
+        if (count == 4) { won = true; break; }
       }
-      if (count == 4) { won = true; }
     }
 
     if (won == true) {
