@@ -8,8 +8,10 @@
   var piecesOnBoard = 0;
   var humanScore = 0;
   var computerScore = 0;
+  var canMove = true; // prevents user from moving while computer is going
 
   function setUpBoard() {
+    canMove = true;
     var area = document.getElementById('gameArea');
     var grid = document.createElement('table');
     grid.id = 'gameGrid';
@@ -29,9 +31,18 @@
       grid.appendChild(tr);
     }
     document.getElementById('gameArea').addEventListener('click', boardClick);
+    document.getElementById('gameArea').addEventListener('hover', boardHover);
     document.getElementById('score').innerHTML = '<strong class="player1">You: ' + humanScore + '</strong>&nbsp;&nbsp;&nbsp; <strong class="player2">Computer: ' + computerScore + '</strong>';
     return board;
   };
+
+  function boardHover(event) {
+    // event = event || window.event;
+    // var grid = document.getElementById('gameGrid');
+    // var rect = grid.getBoundingClientRect();
+    // var column = event.pageX - rect.left;
+    // column = Math.floor(column/cellWidth);
+  }
 
   function boardClick(event) {
     event = event || window.event;
@@ -40,9 +51,10 @@
     var column = event.pageX - rect.left;
     column = Math.floor(column/cellWidth);
     // if it's from a click, it's the human player
-    var move = playerMove(1, column);
+    if (canMove) { var move = playerMove(1, column); }
     // if that move was succesful, let the computer move
-    if (move) { playerMove(2); }
+    canMove = false;
+    setTimeout(function() { if (move) { playerMove(2); canMove = true; } }, 500);
   }
 
   function playerMove(player, column) {
